@@ -21,4 +21,8 @@ class DeckTest < Minitest::Test
     cards = [@card1,@card2,@card3]
     assert_equal cards , @deck.cards
   end
+
+  def test_it_can_index_card_rank
+    assert_equal 12 , @deck.rank_of_card_at(0)
+  end
 end
