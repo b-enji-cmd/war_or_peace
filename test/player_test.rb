@@ -18,4 +18,19 @@ class PlayerTest < Minitest::Test
     assert_instance_of Player, @player
   end
 
+  def test_it_has_attributes
+    assert_equal "Clarisa", @player.name
+    assert_equal @deck, @player.deck
+    assert_equal false, @player.has_lost?
+  end
+
+  def test_it_can_remove_a_card_from_the_deck
+    assert_equal @card1, @player.deck.remove_card
+    assert_equal false, @player.has_lost?
+    assert_equal @card2, @player.deck.remove_card
+    assert_equal false, @player.has_lost?
+    assert_equal @card3, @player.deck.remove_card
+    assert_equal true, @player.has_lost?
+  end
+
 end
