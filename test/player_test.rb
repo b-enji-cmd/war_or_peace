@@ -17,5 +17,5 @@ class PlayerTest < Minitest::Test
   def test_it_is
     assert_instance_of Player, @player
   end
-  
+
 end
