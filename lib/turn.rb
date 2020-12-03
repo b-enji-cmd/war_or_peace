@@ -53,4 +53,21 @@ class Turn
       "Something went wrong!"
     end
   end
+
+  def pile_cards
+    cards = type
+    case cards
+    when :basic
+      @spoils_of_war << @player1.deck.cards.shift
+      @spoils_of_war << @player2.deck.cards.shift
+    when :war
+      @spoils_of_war << @player1.deck.cards.shift(3)
+      @spoils_of_war << @player2.deck.cards.shift(3)
+    when :mutually_assured_destruction
+      @player1.deck.cards.shift(3)
+      @player2.deck.cards.shift(3)
+    else
+      "Something went wrong!"
+    end
+  end
 end
