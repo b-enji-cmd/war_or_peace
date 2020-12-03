@@ -62,8 +62,7 @@ class TurnTest < Minitest::Test
     assert_equal @player1, winner
   end
 
-  def test_it_can_award_spoils_of_war
-    winner = @turn.winner
+  def test_it_can_congregate_spoils_of_war
     @turn.pile_cards
     assert_equal [@card1, @card3], @turn.spoils_of_war
   end
