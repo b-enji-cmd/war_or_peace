@@ -43,12 +43,12 @@ class Turn
   def winner
     victor = type
     case victor
-    when :basic
-      calculate_winner(@player1, @player2, 0)
-    when :war
-      calculate_winner(@player1, @player2, 2)
     when :mutually_assured_destruction
       "No Winner"
+    when :war
+      calculate_winner(@player1, @player2, 2)
+    when :basic
+      calculate_winner(@player1, @player2, 0)
     else
       "Something went wrong!"
     end
@@ -57,22 +57,26 @@ class Turn
   def pile_cards
     cards = type
     case cards
-    when :basic
-      @spoils_of_war << @player1.deck.cards.shift
-      @spoils_of_war << @player2.deck.cards.shift
-    when :war
-      @spoils_of_war << @player1.deck.cards.shift(3)
-      @spoils_of_war << @player2.deck.cards.shift(3)
     when :mutually_assured_destruction
-      @player1.deck.cards.shift(3)
-      @player2.deck.cards.shift(3)
+      @player1.deck.remove_card
+      @player2.deck.remove_card
+    when :war
+      3.times do
+        @spoils_of_war << @player1.deck.remove_card
+        @spoils_of_war << @player2.deck.remove_card
+      end
+    when :basic
+      @spoils_of_war << @player1.deck.remove_card
+      @spoils_of_war << @player2.deck.remove_card
     else
       "Something went wrong!"
     end
+
   end
 
   def award_spoils(winner)
-    @spoils_of_war.each do |card|
+    card_take = @spoils_of_war.flatten
+    card_take.each do |card|
       winner.deck.add_card(card)
     end
   end
