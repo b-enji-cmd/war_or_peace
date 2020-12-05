@@ -7,7 +7,42 @@ class Turn
     @player1 = player1
     @player2 = player2
     @spoils_of_war = []
+    @test = []
   end
+
+  def start
+
+    puts "Welcome to War! (or Peace) This game will be played with 52 cards.\n"
+    puts "The players today are #{@player1.name} and #{@player2.name}.\n"
+    puts "Type GO to start the game"
+    puts "-"*20
+
+    user_in = gets.chomp
+    while user_in != "GO"
+      puts "Bad input!, try again"
+      user_in = gets.chomp
+    end
+    count = 0
+    until @player1.has_lost? || @player1.has_lost? || count == 1000000
+      turn_type = type
+      if turn_type == :mutually_assured_destruction
+        pile_cards
+        puts "mutually assured destruction, 6 cards removed from play"
+      else
+        round_winner = winner
+        test = round_winner.name
+        pile_cards
+        award_spoils(round_winner)
+        puts "Turn :#{count}: #{test} wins #{spoils_of_war.length} cards!"
+      end
+      if @player1.has_lost? || @player1.has_lost?
+        p "*~*~*~*~#{test} Has won the game!*~*~*~*~"
+      end
+      @spoils_of_war = []
+      count +=1
+    end
+  end
+
 
   def mutually_assured_destruction?
     @player1.deck.rank_of_card_at(0) == @player2.deck.rank_of_card_at(0) &&
@@ -71,7 +106,6 @@ class Turn
     else
       "Something went wrong!"
     end
-
   end
 
   def award_spoils(winner)
