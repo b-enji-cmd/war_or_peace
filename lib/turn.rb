@@ -23,28 +23,40 @@ class Turn
       user_in = gets.chomp
     end
     count = 0
-    until @player1.has_lost? || @player1.has_lost? || count == 1000000
-      turn_type = type
-      if turn_type == :mutually_assured_destruction
-        pile_cards
+    until @player1.has_lost? || @player2.has_lost? || count == 1000000
+      p "BEFORE TURN: #{@player1.deck.cards.count}"
+      p "BEFORE TURN: #{@player2.deck.cards.count}"
+      turn = type
+      round_winner = winner
+      victor = round_winner.name unless turn == :mutually_assured_destruction
+      pile_cards
+      p "SOW: #{@spoils_of_war.count}"
+      p "AFTER TURN: #{@player1.deck.cards.count}"
+      p "AFTER TURN: #{@player2.deck.cards.count}"
+      if turn == :mutually_assured_destruction
         puts "mutually assured destruction, 6 cards removed from play"
       else
-        round_winner = winner
-        test = round_winner.name
-        pile_cards
         award_spoils(round_winner)
-        puts "Turn :#{count}: #{test} wins #{spoils_of_war.length} cards!"
-      end
-      if @player1.has_lost? || @player1.has_lost?
-        p "*~*~*~*~#{test} Has won the game!*~*~*~*~"
+        puts "Turn :#{count}: #{victor} wins #{spoils_of_war.length} cards!"
       end
       @spoils_of_war = []
-      count +=1
+
+      p "*~*~*~*~#{victor} Has won the game!*~*~*~*~" if @player1.has_lost? || @player2.has_lost?
+      count+=1
+
     end
   end
 
 
+
   def mutually_assured_destruction?
+    if @player1.deck.cards.length < 3
+      @player1.has_lost? == true
+    end
+    if @player2.deck.cards.length < 3
+      @player2.has_lost? == true
+    end
+
     @player1.deck.rank_of_card_at(0) == @player2.deck.rank_of_card_at(0) &&
       @player1.deck.rank_of_card_at(2) == @player2.deck.rank_of_card_at(2)
   end
@@ -76,36 +88,35 @@ class Turn
   end
 
   def winner
-    victor = type
-    case victor
-    when :mutually_assured_destruction
+    if mutually_assured_destruction?
       "No Winner"
-    when :war
+    elsif war?
       calculate_winner(@player1, @player2, 2)
-    when :basic
+    elsif basic?
       calculate_winner(@player1, @player2, 0)
-    else
-      "Something went wrong!"
     end
   end
 
   def pile_cards
-    cards = type
-    case cards
-    when :mutually_assured_destruction
-      @player1.deck.remove_card
-      @player2.deck.remove_card
-    when :war
-      3.times do
+    if mutually_assured_destruction?
+        @player1.deck.remove_card
+        @player2.deck.remove_card
+        @player1.deck.remove_card
+        @player2.deck.remove_card
+        @player1.deck.remove_card
+        @player2.deck.remove_card
+    elsif war?
         @spoils_of_war << @player1.deck.remove_card
         @spoils_of_war << @player2.deck.remove_card
-      end
-    when :basic
+        @spoils_of_war << @player1.deck.remove_card
+        @spoils_of_war << @player2.deck.remove_card
+        @spoils_of_war << @player1.deck.remove_card
+        @spoils_of_war << @player2.deck.remove_card
+    elsif basic?
       @spoils_of_war << @player1.deck.remove_card
       @spoils_of_war << @player2.deck.remove_card
-    else
-      "Something went wrong!"
     end
+
   end
 
   def award_spoils(winner)

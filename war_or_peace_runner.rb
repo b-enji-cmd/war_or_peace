@@ -30,18 +30,22 @@ card_details = {
     'Ace' => 14
 }
 
-player_one_deck = []
-player_two_deck = []
+global_deck = []
 suits.each do |suit|
   card_details.each do |key,value|
-    player_one_deck << Card.new(suit,key,value)
-    player_two_deck << Card.new(suit,key,value)
+    global_deck << Card.new(suit,key,value)
   end
 end
+
+player_one_deck = [global_deck[0..25]].flatten
+player_two_deck = [global_deck[26..51]].flatten
 @deck1 = Deck.new(player_one_deck.shuffle)
 @deck2 = Deck.new(player_two_deck.shuffle)
+
 @player1 = Player.new("Megan", @deck1)
 @player2 = Player.new("Aurora", @deck2)
 @turn = Turn.new(@player1, @player2)
+
+
 
 @turn.start

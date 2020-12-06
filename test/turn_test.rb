@@ -102,4 +102,25 @@ class TurnTest < Minitest::Test
     assert_equal "No Winner", winner
     assert_equal [], turn.spoils_of_war
   end
+
+  def test_pile_cards_mutual
+    card6 = Card.new(:diamond, '8', 8)
+    deck1 = Deck.new([@card1, @card2, @card5, @card8])
+    deck2 = Deck.new([@card4, @card3, card6, @card7])
+    player1 = Player.new("Megan", deck1)
+    player2 = Player.new("Aurora", deck2)
+    turn = Turn.new(player1, player2)
+    winner = turn.winner
+    assert turn.pile_cards #making sure it doesnt return false or nil
+  end
+
+  def test_pile_cards_war
+    deck1 = Deck.new([@card1, @card2, @card5, @card8])
+    deck2 = Deck.new([@card4, @card3, @card6, @card7])
+    player1 = Player.new("Megan", deck1)
+    player2 = Player.new("Aurora", deck2)
+    turn = Turn.new(player1, player2)
+    winner = turn.winner
+    assert turn.pile_cards #making sure it doesnt return false or nil
+  end
 end
