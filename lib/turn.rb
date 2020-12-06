@@ -7,7 +7,6 @@ class Turn
     @player1 = player1
     @player2 = player2
     @spoils_of_war = []
-    @test = []
   end
 
   def start
@@ -23,25 +22,33 @@ class Turn
       user_in = gets.chomp
     end
     count = 0
-    until @player1.has_lost? || @player2.has_lost? || count == 1000000
-      p "BEFORE TURN: #{@player1.deck.cards.count}"
-      p "BEFORE TURN: #{@player2.deck.cards.count}"
+    until @player1.has_lost? || @player2.has_lost? || count >= 1000000
       turn = type
       round_winner = winner
-      victor = round_winner.name unless turn == :mutually_assured_destruction
+
+      if turn == :mutually_assured_destruction
+        victor = "No Winner"
+      else
+        victor = round_winner.name
+      end
+
+      if @player1.deck.cards.count == 2 || @player2.deck.cards.count == 2 && turn == :mutually_assured_destruction
+        puts "Brutality for: #{victor}!"
+      end
       pile_cards
-      p "SOW: #{@spoils_of_war.count}"
-      p "AFTER TURN: #{@player1.deck.cards.count}"
-      p "AFTER TURN: #{@player2.deck.cards.count}"
+      if @player1.has_lost? || @player2.has_lost?
+        p "*~*~*~*~#{victor} Has won the game!*~*~*~*~"
+        break
+      end
+
       if turn == :mutually_assured_destruction
         puts "mutually assured destruction, 6 cards removed from play"
       else
         award_spoils(round_winner)
         puts "Turn :#{count}: #{victor} wins #{spoils_of_war.length} cards!"
       end
+      puts "~*~* DRAW *~*~" if count >= 1000000
       @spoils_of_war = []
-
-      p "*~*~*~*~#{victor} Has won the game!*~*~*~*~" if @player1.has_lost? || @player2.has_lost?
       count+=1
 
     end
@@ -50,13 +57,6 @@ class Turn
 
 
   def mutually_assured_destruction?
-    if @player1.deck.cards.length < 3
-      @player1.has_lost? == true
-    end
-    if @player2.deck.cards.length < 3
-      @player2.has_lost? == true
-    end
-
     @player1.deck.rank_of_card_at(0) == @player2.deck.rank_of_card_at(0) &&
       @player1.deck.rank_of_card_at(2) == @player2.deck.rank_of_card_at(2)
   end
@@ -99,19 +99,15 @@ class Turn
 
   def pile_cards
     if mutually_assured_destruction?
+      3.times do
         @player1.deck.remove_card
         @player2.deck.remove_card
-        @player1.deck.remove_card
-        @player2.deck.remove_card
-        @player1.deck.remove_card
-        @player2.deck.remove_card
+      end
     elsif war?
+      3.times do
         @spoils_of_war << @player1.deck.remove_card
         @spoils_of_war << @player2.deck.remove_card
-        @spoils_of_war << @player1.deck.remove_card
-        @spoils_of_war << @player2.deck.remove_card
-        @spoils_of_war << @player1.deck.remove_card
-        @spoils_of_war << @player2.deck.remove_card
+      end
     elsif basic?
       @spoils_of_war << @player1.deck.remove_card
       @spoils_of_war << @player2.deck.remove_card
