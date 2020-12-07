@@ -9,6 +9,8 @@ class Turn
     @spoils_of_war = []
   end
 
+
+
   def start
 
     puts "Welcome to War! (or Peace) This game will be played with 52 cards.\n"
@@ -53,7 +55,6 @@ class Turn
 
     end
   end
-
 
 
   def mutually_assured_destruction?
